@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event-Driven Photo Sharing Application</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #a6c0fe, #f68084);
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 25px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            display: none; /* Initially hidden */
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        .container.show {
+            display: block; /* Show the form */
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        textarea:focus {
+            border-color: #4CAF50;
+        }
+
+        .button {
+            background: linear-gradient(90deg, #4CAF50, #388e3c);
+            color: white;
+            padding: 12px 0;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .button:hover {
+            background: linear-gradient(90deg, #388e3c, #4CAF50);
+        }
+
+        .show-button {
+            background-color: #007acc;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .show-button:hover {
+            background-color: #005b99;
+        }
+    </style>
+</head>
+<body>
+    <h1>Event-Driven Photo Sharing Application on AWS Cloud</h1>
+    <button class="show-button" onclick="toggleForm()">Create New Event</button>
+
+    <div class="container" id="formContainer">
+        <h2>Create New Event</h2>
+        <div class="form-group">
+            <label for="eventName">Event Name:</label>
+            <input type="text" id="eventName" name="eventName" required>
+        </div>
+        <div class="form-group">
+            <label for="eventDate">Event Date:</label>
+            <input type="date" id="eventDate" name="eventDate" required>
+        </div>
+        <div class="form-group">
+            <label for="eventDescription">Event Description:</label>
+            <textarea id="eventDescription" name="eventDescription" rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="uploadPhoto">Upload Photo:</label>
+            <input type="file" id="uploadPhoto" name="uploadPhoto">
+        </div>
+        <button type="submit" class="button">Submit Event</button>
+    </div>
+
+    <script>
+        function toggleForm() {
+            const formContainer = document.getElementById("formContainer");
+            formContainer.classList.toggle("show");
+        }
+
+        document.querySelector('.button').addEventListener('click', async (event) => {
+    event.preventDefault();
+
+    const eventName = document.getElementById('eventName').value;
+    const eventDate = document.getElementById('eventDate').value;
+    const eventDescription = document.getElementById('eventDescription').value;
+
+    const formData = new FormData();
+    formData.append('eventName', eventName);
+    formData.append('eventDate', eventDate);
+    formData.append('eventDescription', eventDescription);
+    formData.append('photo', document.getElementById('uploadPhoto').files[0]);
+
+    try {
+        const response = await fetch('http://localhost:5000/api/events', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (response.ok) {
+            alert('Event submitted successfully!');
+        } else {
+            alert('Failed to submit the event.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while submitting the event.');
+    }
+});
+
+    </script>
+
+
+
+
+
+    
+    
+
+
+
+
+
+</body>
+</html>
