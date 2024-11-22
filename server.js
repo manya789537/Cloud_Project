@@ -5,13 +5,13 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000; // Use environment variable for port, fallback to 5000
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
+// MongoDB Connection (Update with your MongoDB connection URL)
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
@@ -29,7 +29,7 @@ const Event = mongoose.model('Event', eventSchema);
 // File Upload Setup
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, 'uploads/'),
-    filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`), // Fixed interpolation
+    filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
 });
 
 const upload = multer({ storage });
@@ -53,5 +53,5 @@ app.post('/api/events', upload.single('photo'), async (req, res) => {
     }
 });
 
-// Start Server
-app.listen(port, () => console.log(`Server running on http://localhost:${port}`)); // Fixed quotes
+// Start Server (Listen on 0.0.0.0 to make it externally accessible)
+app.listen(port, '0.0.0.0', () => console.log(`Server running on http://localhost:${port}`)); // Listen on all network interfaces
